@@ -211,7 +211,7 @@ export default function AdminDetail() {
             </div>
             <div className="flex justify-center bg-gray-50 rounded-2xl p-4 mb-3" ref={qrRef}>
               <QRCodeCanvas
-                value={`${USER_PANEL_URL}/register?shopId=${admin.shopId}`}
+                value={`${USER_PANEL_URL}/user/login?shopId=${admin.shopId}`}
                 size={180}
                 bgColor="#f9fafb"
                 fgColor="#1a0000"
@@ -219,7 +219,7 @@ export default function AdminDetail() {
                 includeMargin
               />
             </div>
-            <p className="text-xs text-gray-400 text-center mb-4 break-all">{USER_PANEL_URL}/register?shopId={admin.shopId}</p>
+            <p className="text-xs text-gray-400 text-center mb-4 break-all">{USER_PANEL_URL}/user/login?shopId={admin.shopId}</p>
             <button onClick={downloadQR} className="w-full bg-[#800000] text-white font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2">
               <Download size={16} /> Download QR
             </button>
