@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
 import Swal from "sweetalert2";
-import { ShieldCheck, KeyRound, LogOut, Eye, EyeOff, Loader2, User, X, Shield, ChevronRight } from "lucide-react";
+import { ShieldCheck, KeyRound, LogOut, Eye, EyeOff, Loader2, User, X, Shield, ChevronRight, Download } from "lucide-react";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -71,8 +71,8 @@ export default function Profile() {
         {/* Profile Info Card */}
         <div className="bg-white rounded-[24px] shadow-[0_8px_30px_rgb(0,0,0,0.06)] border border-gray-100 p-6">
           <div className="flex items-center gap-4">
-            <div className="w-16 h-16 bg-[#ffe4e4] rounded-2xl flex items-center justify-center shrink-0">
-              <ShieldCheck size={30} className="text-[#800000]" />
+            <div className="w-16 h-16 rounded-2xl overflow-hidden shrink-0">
+              <img src="/logo.jpeg" alt="Inaamify" className="w-full h-full object-cover" />
             </div>
             <div>
               <p className="font-extrabold text-gray-900 text-lg">{saInfo.username || "Super Admin"}</p>
@@ -101,6 +101,16 @@ export default function Profile() {
         >
           <KeyRound size={20} /> Change Password
         </button>
+
+        {/* Download App */}
+        <a
+          href="https://super-admin-redeem-point-admin-pane.vercel.app"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="w-full bg-white border-2 border-[#800000]/20 text-[#800000] py-4 rounded-2xl font-bold flex items-center justify-center gap-2 active:scale-[0.98] transition hover:bg-[#fff5f5] shadow-sm"
+        >
+          <Download size={20} /> Download / Open App
+        </a>
 
         {/* Logout */}
         <button

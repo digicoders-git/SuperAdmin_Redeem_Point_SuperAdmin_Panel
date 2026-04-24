@@ -37,10 +37,10 @@ export default function SuperAdminLogin() {
       <div className="w-full max-w-sm relative z-10">
         {/* Logo */}
         <div className="flex flex-col items-center mb-8">
-          <div className="w-20 h-20 bg-gradient-to-br from-[#800000] to-[#6b0000] rounded-3xl shadow-lg shadow-[#800000]/30 flex items-center justify-center mb-4">
-            <ShieldCheck size={36} className="text-white" />
+          <div className="w-20 h-20 rounded-3xl shadow-lg overflow-hidden mb-4">
+            <img src="/logo.jpeg" alt="Inaamify" className="w-full h-full object-cover" />
           </div>
-          <h1 className="text-2xl font-extrabold text-[#1a0000] tracking-tight">Super Admin</h1>
+          <h1 className="text-2xl font-extrabold text-[#1a0000] tracking-tight">Inaamify SuperAdmin</h1>
           <p className="text-sm text-gray-400 font-medium mt-1">Control Center Login</p>
         </div>
 
