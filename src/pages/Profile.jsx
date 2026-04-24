@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
 import Swal from "sweetalert2";
-import { ShieldCheck, KeyRound, LogOut, Eye, EyeOff, Loader2, User, X } from "lucide-react";
+import { ShieldCheck, KeyRound, LogOut, Eye, EyeOff, Loader2, User, X, Shield, ChevronRight } from "lucide-react";
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -82,6 +82,17 @@ export default function Profile() {
             </div>
           </div>
         </div>
+
+        {/* Terms & Conditions */}
+        <button
+          onClick={() => navigate("/terms")}
+          className="w-full bg-white border-2 border-gray-100 text-gray-800 py-4 rounded-2xl font-bold flex items-center justify-between px-5 active:scale-[0.98] transition hover:bg-gray-50 shadow-sm"
+        >
+          <div className="flex items-center gap-2">
+            <Shield size={20} className="text-[#800000]" /> Terms & Conditions
+          </div>
+          <ChevronRight size={18} className="text-gray-400" />
+        </button>
 
         {/* Change Password Button */}
         <button

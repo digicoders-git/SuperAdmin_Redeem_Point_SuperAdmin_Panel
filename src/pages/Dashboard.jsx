@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
-import { Users, Store, Gift, Receipt, RotateCcw, Zap, LogOut, LayoutDashboard, Clock, Loader2, Settings } from "lucide-react";
+import { Users, Store, Gift, Receipt, RotateCcw, Zap, LogOut, LayoutDashboard, Clock, Loader2, Settings, X, ChevronRight, IndianRupee } from "lucide-react";
 import { AreaChart, Area, LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from "recharts";
 
 const StatCard = ({ icon, label, value, color, onClick }) => (
@@ -21,6 +21,57 @@ export default function Dashboard() {
   const [loading, setLoading] = useState(true);
   const [chartData, setChartData] = useState({ growth: [], owners: [] });
   const saInfo = JSON.parse(localStorage.getItem("saInfo") || "{}");
+
+  // Bills modal state
+  const [billsModal, setBillsModal] = useState(false);
+  const [allAdmins, setAllAdmins] = useState([]);
+  const [selectedAdmin, setSelectedAdmin] = useState(null);
+  const [adminUsers, setAdminUsers] = useState([]);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userBills, setUserBills] = useState([]);
+  const [modalLoading, setModalLoading] = useState(false);
+  const [step, setStep] = useState(1); // 1=admin, 2=user, 3=bills
+
+  const statusStyle = {
+    pending: "bg-amber-100 text-amber-600",
+    approved: "bg-green-100 text-green-600",
+    rejected: "bg-red-100 text-red-500",
+  };
+
+  const openBillsModal = async () => {
+    setBillsModal(true);
+    setStep(1);
+    setSelectedAdmin(null);
+    setSelectedUser(null);
+    setUserBills([]);
+    if (allAdmins.length === 0) {
+      setModalLoading(true);
+      const { data } = await api.get("/superadmin/admins");
+      setAllAdmins(data.admins || []);
+      setModalLoading(false);
+    }
+  };
+
+  const selectAdmin = async (admin) => {
+    setSelectedAdmin(admin);
+    setSelectedUser(null);
+    setUserBills([]);
+    setStep(2);
+    setModalLoading(true);
+    const { data } = await api.get("/superadmin/admins/" + admin._id);
+    setAdminUsers(data.users || []);
+    setModalLoading(false);
+  };
+
+  const selectUser = async (user) => {
+    setSelectedUser(user);
+    setStep(3);
+    setModalLoading(true);
+    const { data } = await api.get("/superadmin/bills");
+    const bills = data.bills.filter(b => (b.userId?._id || b.userId) === user._id);
+    setUserBills(bills);
+    setModalLoading(false);
+  };
 
   useEffect(() => {
     Promise.all([
@@ -68,7 +119,7 @@ export default function Dashboard() {
   const cards = [
     { label: "Total Admins", value: stats?.totalAdmins, icon: <Store size={24} />, color: "bg-[#800000]/10 text-[#800000] border-[#800000]/20", path: "/admins" },
     { label: "Total Users", value: stats?.totalUsers, icon: <Users size={24} />, color: "bg-emerald-100 text-emerald-600 border-emerald-200", path: "/users" },
-    { label: "Total Bills", value: stats?.totalBills, icon: <Receipt size={24} />, color: "bg-[#6b0000]/10 text-[#6b0000] border-[#6b0000]/20", path: "/admins" },
+    { label: "Total Bills", value: stats?.totalBills, icon: <Receipt size={24} />, color: "bg-[#6b0000]/10 text-[#6b0000] border-[#6b0000]/20", onClick: openBillsModal },
     { label: "Total Rewards", value: stats?.totalRewards, icon: <Gift size={24} />, color: "bg-[#800000]/10 text-[#800000] border-[#800000]/20", path: "/rewards" },
     { label: "Pending Bills", value: stats?.pendingBills, icon: <Clock size={24} />, color: "bg-amber-100 text-amber-600 border-amber-200", path: "/admins" },
     { label: "Pending Redeem", value: stats?.pendingRedemptions, icon: <RotateCcw size={24} />, color: "bg-[#f97316]/10 text-[#f97316] border-[#f97316]/20", path: "/admins" },
@@ -133,7 +184,7 @@ export default function Dashboard() {
           <>
             <div className="grid grid-cols-2 gap-4 mb-6">
               {cards.map((c) => (
-                <StatCard key={c.label} icon={c.icon} label={c.label} value={c.value} color={c.color} onClick={() => navigate(c.path)} />
+                <StatCard key={c.label} icon={c.icon} label={c.label} value={c.value} color={c.color} onClick={c.onClick || (() => navigate(c.path))} />
               ))}
             </div>
 
@@ -203,6 +254,108 @@ export default function Dashboard() {
       </div>
 
       <BottomNav />
+
+      {/* Bills Modal */}
+      {billsModal && (
+        <div className="fixed inset-0 z-50 flex items-end justify-center" onClick={() => setBillsModal(false)}>
+          <div className="absolute inset-0 bg-black/50 backdrop-blur-sm" />
+          <div className="relative w-full max-w-lg bg-white rounded-t-[32px] max-h-[85vh] flex flex-col" onClick={e => e.stopPropagation()}>
+            {/* Modal Header */}
+            <div className="flex items-center justify-between px-5 pt-5 pb-3 border-b border-gray-100">
+              <div>
+                <h2 className="font-bold text-gray-900 text-lg">View Bills</h2>
+                <p className="text-xs text-gray-400 mt-0.5">
+                  {step === 1 && "Select an admin"}
+                  {step === 2 && `Admin: ${selectedAdmin?.name || selectedAdmin?.adminId}`}
+                  {step === 3 && `User: ${selectedUser?.name}`}
+                </p>
+              </div>
+              <div className="flex items-center gap-2">
+                {step > 1 && (
+                  <button onClick={() => setStep(s => s - 1)} className="text-xs font-bold text-[#800000] bg-[#ffe4e4] px-3 py-1.5 rounded-xl">← Back</button>
+                )}
+                <button onClick={() => setBillsModal(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
+                  <X size={16} className="text-gray-500" />
+                </button>
+              </div>
+            </div>
+
+            <div className="overflow-y-auto flex-1 px-4 py-3">
+              {modalLoading ? (
+                <div className="flex justify-center py-10">
+                  <div className="w-6 h-6 border-2 border-[#800000] border-t-transparent rounded-full animate-spin" />
+                </div>
+              ) : (
+                <>
+                  {/* Step 1 — Select Admin */}
+                  {step === 1 && (
+                    <div className="space-y-2">
+                      {allAdmins.length === 0 && <p className="text-center text-gray-400 text-sm py-6">No admins found</p>}
+                      {allAdmins.map(a => (
+                        <button key={a._id} onClick={() => selectAdmin(a)} className="w-full flex items-center justify-between bg-gray-50 hover:bg-[#fff5f5] border border-gray-100 rounded-2xl px-4 py-3 active:scale-[0.98] transition">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 bg-[#ffe4e4] rounded-xl flex items-center justify-center">
+                              <span className="text-[#800000] font-extrabold text-sm">{a.name?.[0]?.toUpperCase() || "A"}</span>
+                            </div>
+                            <div className="text-left">
+                              <p className="font-bold text-gray-900 text-sm">{a.name || a.adminId}</p>
+                              <p className="text-xs text-gray-400">{a.shopId}</p>
+                            </div>
+                          </div>
+                          <ChevronRight size={16} className="text-gray-400" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Step 2 — Select User */}
+                  {step === 2 && (
+                    <div className="space-y-2">
+                      {adminUsers.length === 0 && <p className="text-center text-gray-400 text-sm py-6">No users in this shop</p>}
+                      {adminUsers.map(u => (
+                        <button key={u._id} onClick={() => selectUser(u)} className="w-full flex items-center justify-between bg-gray-50 hover:bg-[#fff5f5] border border-gray-100 rounded-2xl px-4 py-3 active:scale-[0.98] transition">
+                          <div className="flex items-center gap-3">
+                            <div className="w-9 h-9 bg-emerald-100 rounded-xl flex items-center justify-center">
+                              <span className="text-emerald-600 font-extrabold text-sm">{u.name?.[0]?.toUpperCase() || "U"}</span>
+                            </div>
+                            <div className="text-left">
+                              <p className="font-bold text-gray-900 text-sm">{u.name}</p>
+                              <p className="text-xs text-gray-400">{u.mobile}</p>
+                            </div>
+                          </div>
+                          <ChevronRight size={16} className="text-gray-400" />
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Step 3 — Bills List */}
+                  {step === 3 && (
+                    <div className="space-y-2">
+                      {userBills.length === 0 && <p className="text-center text-gray-400 text-sm py-6">No bills found for this user</p>}
+                      {userBills.map(b => (
+                        <div key={b._id} className="bg-white border border-gray-100 rounded-2xl px-4 py-3 flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <IndianRupee size={15} className="text-[#800000] shrink-0" />
+                            <div>
+                              <p className="font-bold text-gray-900 text-sm">₹{b.amount}</p>
+                              <p className="text-[11px] text-gray-400">{new Date(b.createdAt).toLocaleDateString("en-IN")}</p>
+                            </div>
+                          </div>
+                          <div className="flex flex-col items-end gap-1">
+                            <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full capitalize ${statusStyle[b.status]}`}>{b.status}</span>
+                            {b.pointsEarned > 0 && <span className="text-[10px] text-emerald-600 font-bold">+{b.pointsEarned} pts</span>}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

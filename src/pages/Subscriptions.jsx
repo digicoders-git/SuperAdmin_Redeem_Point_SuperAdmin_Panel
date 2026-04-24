@@ -220,15 +220,13 @@ export default function Subscriptions() {
             <form onSubmit={savePlan} className="space-y-3">
               <input placeholder="Plan Name *" value={form.name} onChange={e => setForm({ ...form, name: e.target.value })} required className={inputCls} />
               <input placeholder="Description (optional)" value={form.description} onChange={e => setForm({ ...form, description: e.target.value })} className={inputCls} />
-              <div className="grid grid-cols-2 gap-2">
-                <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 block">Monthly ₹</label>
-                  <input type="number" placeholder="499" value={form.monthlyPrice} onChange={e => setForm({ ...form, monthlyPrice: e.target.value })} required className={inputCls} />
-                </div>
-                <div>
-                  <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 block">Annual ₹</label>
-                  <input type="number" placeholder="4999" value={form.annualPrice} onChange={e => setForm({ ...form, annualPrice: e.target.value })} required className={inputCls} />
-                </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 block">Annual Price ₹ *</label>
+                <input type="number" placeholder="4999" value={form.annualPrice} onChange={e => setForm({ ...form, annualPrice: e.target.value })} required className={inputCls} />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 block">Monthly Price ₹ <span className="text-gray-300 normal-case font-normal">(optional)</span></label>
+                <input type="number" placeholder="499" value={form.monthlyPrice} onChange={e => setForm({ ...form, monthlyPrice: e.target.value })} className={inputCls} />
               </div>
               <div>
                 <label className="text-[10px] font-bold text-gray-400 uppercase tracking-wide mb-1 block">Features (one per line)</label>
