@@ -5,7 +5,7 @@ import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
 import { ArrowLeft, Users, Gift, RotateCcw, QrCode, Download, X, Receipt, ZoomIn } from "lucide-react";
 
-const USER_PANEL_URL = import.meta.env.VITE_USER_PANEL_URL || "https://your-userpanel.vercel.app";
+const USER_PANEL_URL = import.meta.env.VITE_USER_PANEL_URL || "https://super-admin-redeem-point-admin-pane.vercel.app/";
 
 const Tab = ({ label, active, onClick }) => (
   <button
