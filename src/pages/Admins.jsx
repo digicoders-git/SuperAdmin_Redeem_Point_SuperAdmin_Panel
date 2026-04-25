@@ -71,6 +71,8 @@ export default function Admins() {
       Name: a.name || "N/A",
       "Admin ID": a.adminId,
       "Shop ID": a.shopId,
+      "Shop Name": a.shopName || "N/A",
+      Mobile: a.mobile || "N/A",
       "User Count": a.userCount || 0,
       "Bill Count": a.billCount || 0,
       "Created On": new Date(a.createdAt).toLocaleDateString(),
@@ -156,7 +158,8 @@ export default function Admins() {
                     <ChevronRight size={14} className="text-gray-300" />
                   </div>
                   <p className="text-xs text-gray-400 mt-0.5">ID: {a.adminId}</p>
-                  <p className="text-xs text-[#800000] font-semibold mt-0.5">Shop: {a.shopId}</p>
+                  <p className="text-xs text-[#800000] font-semibold mt-0.5">Shop: {a.shopName || "N/A"} ({a.shopId})</p>
+                  <p className="text-[10px] text-gray-500 font-medium">Mobile: {a.mobile || "N/A"}</p>
                   <div className="flex gap-3 mt-1.5">
                     <span className="flex items-center gap-1 text-xs text-gray-400"><Users size={11} />{a.userCount} users</span>
                     <span className="flex items-center gap-1 text-xs text-gray-400"><Receipt size={11} />{a.billCount} bills</span>

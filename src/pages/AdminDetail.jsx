@@ -59,7 +59,9 @@ export default function AdminDetail() {
             </button>
             <div className="flex-1">
               <p className="text-white font-bold text-xl leading-tight">{admin.name || admin.adminId}</p>
-              <p className="text-white/70 text-xs font-medium">Shop: {admin.shopId}</p>
+              <p className="text-white/70 text-xs font-bold uppercase tracking-widest mt-1">{admin.shopName || "N/A"}</p>
+              <p className="text-white/50 text-[10px] font-medium">Shop ID: {admin.shopId}</p>
+              <p className="text-white/50 text-[10px] font-medium">Mobile: {admin.mobile || "N/A"}</p>
             </div>
             <button onClick={() => setShowQR(true)} className="flex items-center gap-1.5 bg-[#f97316] text-white text-xs font-bold px-3 py-2 rounded-xl">
               <QrCode size={14} /> QR Code
