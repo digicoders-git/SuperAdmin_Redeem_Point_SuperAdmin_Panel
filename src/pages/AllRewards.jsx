@@ -13,7 +13,7 @@ export default function AllRewards() {
     api.get("/superadmin/rewards").then(({ data }) => setRewards(data.rewards)).finally(() => setLoading(false));
   }, []);
 
-  const serverBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
+  const serverBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
   const getFullUrl = (path) => {
     if (!path) return "";
     if (path.startsWith("http")) return path;

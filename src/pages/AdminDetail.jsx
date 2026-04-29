@@ -54,7 +54,7 @@ export default function AdminDetail() {
     a.click();
   };
 
-  const serverBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
+  const serverBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
   const getFullUrl = (path) => {
     if (!path || path === "manual_adjustment") return "";
     if (path.startsWith("http")) return path;
