@@ -4,7 +4,7 @@ import { QRCodeCanvas } from "qrcode.react";
 import api from "../api/axios";
 import Swal from "sweetalert2";
 import BottomNav from "../components/BottomNav";
-import { Plus, Trash2, QrCode, X, Download, ChevronRight, Users, Receipt, Store } from "lucide-react";
+import { Plus, Power, QrCode, X, Download, ChevronRight, Users, Receipt, Store } from "lucide-react";
 import * as XLSX from "xlsx";
 
 const USER_PANEL_URL = import.meta.env.VITE_USER_PANEL_URL || "https://your-userpanel.vercel.app";
@@ -42,15 +42,16 @@ export default function Admins() {
     }
   };
 
-  const deleteAdmin = async (id, name) => {
+  const toggleAdmin = async (id, name, currentStatus) => {
+    const action = currentStatus ? "Deactivate" : "Activate";
     const result = await Swal.fire({
-      icon: "warning", title: "Delete Admin?",
-      text: `Delete "${name}"? This cannot be undone.`,
-      showCancelButton: true, confirmButtonColor: "#ef4444", confirmButtonText: "Delete",
+      icon: "question", title: `${action} Admin?`,
+      text: `${action} "${name}"?`,
+      showCancelButton: true, confirmButtonColor: currentStatus ? "#ef4444" : "#22c55e", confirmButtonText: `Yes, ${action}`,
     });
     if (!result.isConfirmed) return;
     try {
-      await api.delete(`/superadmin/admins/${id}`);
+      await api.patch(`/superadmin/admins/${id}/toggle`);
       fetchAdmins();
     } catch (err) {
       Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.message || "Failed" });
@@ -160,18 +161,25 @@ export default function Admins() {
                   <p className="text-xs text-gray-400 mt-0.5">ID: {a.adminId}</p>
                   <p className="text-xs text-[#800000] font-semibold mt-0.5">Shop: {a.shopName || "N/A"} ({a.shopId})</p>
                   <p className="text-[10px] text-gray-500 font-medium">Mobile: {a.mobile || "N/A"}</p>
-                  <div className="flex gap-3 mt-1.5">
+                  <div className="flex gap-3 mt-1.5 items-center">
                     <span className="flex items-center gap-1 text-xs text-gray-400"><Users size={11} />{a.userCount} users</span>
                     <span className="flex items-center gap-1 text-xs text-gray-400"><Receipt size={11} />{a.billCount} bills</span>
+                    <span className={`text-[9px] font-bold px-2 py-0.5 rounded-full border ${a.isActive ? "bg-green-50 text-green-600 border-green-200" : "bg-red-50 text-red-500 border-red-200"}`}>
+                      {a.isActive ? "Active" : "Deactivated"}
+                    </span>
                   </div>
                 </div>
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => setQrAdmin(a)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-[#ffe4e4] text-[#800000]">
-                  <QrCode size={17} />
+                   <QrCode size={17} />
                 </button>
-                <button onClick={() => deleteAdmin(a._id, a.name || a.adminId)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-red-50 text-red-500">
-                  <Trash2 size={17} />
+                <button 
+                  onClick={() => toggleAdmin(a._id, a.name || a.adminId, a.isActive)} 
+                  className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${a.isActive ? "bg-red-50 text-red-500 hover:bg-red-100" : "bg-green-50 text-green-500 hover:bg-green-100"}`}
+                  title={a.isActive ? "Deactivate Account" : "Activate Account"}
+                >
+                  <Power size={17} />
                 </button>
               </div>
             </div>
