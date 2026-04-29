@@ -249,10 +249,19 @@ export default function Admins() {
                 includeMargin
               />
             </div>
-            <p className="text-xs text-gray-400 text-center mb-4 break-all">{USER_PANEL_URL}/register?shopId={qrAdmin.shopId}</p>
-            <button onClick={downloadQR} className="w-full bg-[#800000] text-white font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2">
-              <Download size={16} /> Download QR
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={downloadQR} className="w-full bg-[#800000] text-white font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98]">
+                <Download size={16} /> Download QR
+              </button>
+              <a 
+                href={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
+              >
+                <Plus size={16} /> User Registration Page
+              </a>
+            </div>
           </div>
         </div>
       )}
