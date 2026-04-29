@@ -275,9 +275,6 @@ export default function Admins() {
           </div>
         </div>
       )}
-          </div>
-        </div>
-      )}
 
       <BottomNav />
     </div>
