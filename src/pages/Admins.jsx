@@ -232,36 +232,49 @@ export default function Admins() {
                 <X size={18} className="text-gray-500" />
               </button>
             </div>
-            <div className="text-center mb-4">
-              <div className="w-14 h-14 bg-[#ffe4e4] rounded-2xl flex items-center justify-center mx-auto mb-2">
-                <span className="text-[#800000] font-extrabold text-2xl">{(qrAdmin.name || qrAdmin.adminId)[0].toUpperCase()}</span>
+            <div className="text-center mb-6">
+              <div className="w-20 h-20 bg-gradient-to-br from-[#800000] to-[#6b0000] rounded-[24px] flex items-center justify-center mx-auto mb-3 shadow-lg shadow-[#800000]/20">
+                <span className="text-white font-black text-3xl">{(qrAdmin.shopName || qrAdmin.name || qrAdmin.adminId)[0].toUpperCase()}</span>
               </div>
-              <p className="font-bold text-gray-800">{qrAdmin.name || qrAdmin.adminId}</p>
-              <p className="text-xs text-[#800000] font-semibold mt-0.5">Shop: {qrAdmin.shopId}</p>
+              <h3 className="font-black text-gray-900 text-xl leading-tight mb-1">{qrAdmin.shopName || qrAdmin.name || "Inaamify Partner"}</h3>
+              <p className="text-xs text-[#800000] font-bold tracking-widest uppercase opacity-60">Shop ID: {qrAdmin.shopId}</p>
             </div>
-            <div className="flex justify-center bg-gray-50 rounded-2xl p-4 mb-4" ref={qrRef}>
-              <QRCodeCanvas
-                value={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`}
-                size={180}
-                bgColor="#f9fafb"
-                fgColor="#1a0000"
-                level="H"
-                includeMargin
-              />
+
+            <div className="flex flex-col items-center bg-gray-50 rounded-[32px] p-6 mb-6 border-2 border-dashed border-gray-200">
+              <div ref={qrRef} className="bg-white p-3 rounded-2xl shadow-sm">
+                <QRCodeCanvas
+                  value={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`}
+                  size={180}
+                  bgColor="#ffffff"
+                  fgColor="#1a0000"
+                  level="H"
+                  includeMargin={false}
+                />
+              </div>
+              <p className="text-[10px] text-gray-400 mt-4 font-bold tracking-widest uppercase">Scan to Register</p>
             </div>
-            <div className="flex flex-col gap-2">
-              <button onClick={downloadQR} className="w-full bg-[#800000] text-white font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98]">
-                <Download size={16} /> Download QR
+
+            <div className="flex flex-col gap-3">
+              <button onClick={downloadQR} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20">
+                <Download size={18} /> DOWNLOAD QR CODE
               </button>
               <a 
                 href={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`} 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-extrabold py-3 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
+                className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
               >
-                <Plus size={16} /> User Registration Page
+                <Plus size={18} /> OPEN REGISTRATION PAGE
               </a>
             </div>
+            
+            <div className="mt-6 flex flex-col items-center gap-1">
+              <p className="text-[10px] text-gray-400 font-bold tracking-[0.2em] uppercase">Powered by</p>
+              <p className="text-sm font-black text-gray-900 tracking-tighter">INAAMIFY</p>
+            </div>
+          </div>
+        </div>
+      )}
           </div>
         </div>
       )}
