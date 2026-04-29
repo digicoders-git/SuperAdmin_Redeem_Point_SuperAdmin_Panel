@@ -243,7 +243,7 @@ export default function Admins() {
             <div className="flex flex-col items-center bg-gray-50 rounded-[32px] p-6 mb-6 border-2 border-dashed border-gray-200">
               <div ref={qrRef} className="bg-white p-3 rounded-2xl shadow-sm">
                 <QRCodeCanvas
-                  value={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`}
+                  value={`${USER_PANEL_URL}/user/login?shopId=${qrAdmin.shopId}`}
                   size={180}
                   bgColor="#ffffff"
                   fgColor="#1a0000"
@@ -251,21 +251,21 @@ export default function Admins() {
                   includeMargin={false}
                 />
               </div>
-              <p className="text-[10px] text-gray-400 mt-4 font-bold tracking-widest uppercase">Scan to Register</p>
+              <p className="text-[10px] text-gray-400 mt-4 font-bold tracking-widest uppercase">Scan to Open Login</p>
             </div>
 
             <div className="flex flex-col gap-3">
               <button onClick={downloadQR} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20">
                 <Download size={18} /> DOWNLOAD QR CODE
               </button>
-              {/* <a 
-                href={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`} 
-                target="_blank" 
+              <a
+                href={`${USER_PANEL_URL}/login?shopId=${qrAdmin.shopId}`}
+                target="_blank"
                 rel="noopener noreferrer"
                 className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
               >
-                <Plus size={18} /> OPEN REGISTRATION PAGE
-              </a> */}
+                <Plus size={18} /> OPEN LOGIN PAGE
+              </a>
             </div>
 
             <div className="mt-6 flex flex-col items-center gap-1">
