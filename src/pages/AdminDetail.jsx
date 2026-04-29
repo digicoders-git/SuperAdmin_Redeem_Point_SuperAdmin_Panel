@@ -3,7 +3,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Users, Gift, RotateCcw, QrCode, Download, X, Receipt, ZoomIn } from "lucide-react";
+import { ArrowLeft, Users, Gift, RotateCcw, QrCode, Download, X, Receipt, ZoomIn, IndianRupee, FileText } from "lucide-react";
 
 const USER_PANEL_URL = import.meta.env.VITE_USER_PANEL_URL || "https://super-admin-redeem-point-admin-pane.vercel.app/";
 
@@ -23,11 +23,27 @@ export default function AdminDetail() {
   const [tab, setTab] = useState("users");
   const [showQR, setShowQR] = useState(false);
   const [imgModal, setImgModal] = useState(null);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [userBills, setUserBills] = useState([]);
+  const [loadingBills, setLoadingBills] = useState(false);
   const qrRef = useRef(null);
 
   useEffect(() => {
     api.get(`/superadmin/admins/${id}`).then(({ data }) => setData(data)).catch(() => navigate("/admins"));
   }, [id]);
+
+  const fetchUserBills = async (user) => {
+    setSelectedUser(user);
+    setLoadingBills(true);
+    try {
+      const { data } = await api.get(`/superadmin/users/${user._id}/bills`);
+      setUserBills(data.bills);
+    } catch (err) {
+      console.error(err);
+    } finally {
+      setLoadingBills(false);
+    }
+  };
 
   const downloadQR = () => {
     const canvas = qrRef.current?.querySelector("canvas");
@@ -100,7 +116,7 @@ export default function AdminDetail() {
                 <p className="text-gray-400 text-sm">No users yet</p>
               </div>
             ) : users.map((u) => (
-              <div key={u._id} className="bg-white rounded-2xl p-3.5 border border-gray-100 flex items-center gap-3">
+              <div key={u._id} onClick={() => fetchUserBills(u)} className="bg-white rounded-2xl p-3.5 border border-gray-100 flex items-center gap-3 cursor-pointer active:scale-[0.98] transition-transform">
                 <div className="w-10 h-10 bg-emerald-100 rounded-xl flex items-center justify-center shrink-0">
                   <span className="text-emerald-600 font-extrabold">{u.name?.[0]?.toUpperCase()}</span>
                 </div>
@@ -229,7 +245,72 @@ export default function AdminDetail() {
         </div>
       )}
 
+      {/* User Bills Modal */}
+      {selectedUser && (
+        <div className="fixed inset-0 bg-black/60 z-50 flex items-end sm:items-center justify-center px-0 sm:px-4">
+          <div className="bg-white rounded-t-[32px] sm:rounded-3xl w-full max-w-md shadow-2xl overflow-hidden animate-in slide-in-from-bottom duration-300">
+            <div className="bg-[#800000] p-6 text-white flex justify-between items-center">
+              <div>
+                <h3 className="font-bold text-lg">{selectedUser.name}'s Bills</h3>
+                <p className="text-white/60 text-xs">Total {userBills.length} uploads</p>
+              </div>
+              <button onClick={() => setSelectedUser(null)} className="p-2 bg-white/10 rounded-full hover:bg-white/20 transition">
+                <X size={20} />
+              </button>
+            </div>
+            <div className="max-h-[60vh] overflow-y-auto p-4 space-y-3">
+              {loadingBills ? (
+                <div className="flex justify-center py-12">
+                  <div className="w-8 h-8 border-4 border-[#ffe4e4] border-t-[#800000] rounded-full animate-spin" />
+                </div>
+              ) : userBills.length === 0 ? (
+                <div className="flex flex-col items-center py-12 gap-2">
+                  <FileText size={32} className="text-gray-200" />
+                  <p className="text-gray-400 text-sm font-medium">No bills uploaded yet</p>
+                </div>
+              ) : (
+                userBills.map((b) => (
+                  <div key={b._id} className="bg-gray-50 rounded-2xl p-4 border border-gray-100">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 bg-[#800000]/10 rounded-xl flex items-center justify-center">
+                          <Receipt size={18} className="text-[#800000]" />
+                        </div>
+                        <div>
+                          <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">{new Date(b.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                          <p className="font-extrabold text-gray-900">₹{b.amount}</p>
+                        </div>
+                      </div>
+                      <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                        b.status === "approved" ? "bg-emerald-100 text-emerald-700" :
+                        b.status === "pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
+                      }`}>{b.status}</span>
+                    </div>
+                    {b.billImage && b.billImage !== "manual_adjustment" && (
+                      <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(b.billImage)}>
+                        <img src={b.billImage} alt="Bill" className="w-full h-32 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition-all flex items-center justify-center">
+                          <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100" />
+                        </div>
+                      </div>
+                    )}
+                    <div className="mt-3 pt-3 border-t border-gray-200/50 flex justify-between items-center">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase">Points Earned</p>
+                      <p className="text-sm font-black text-emerald-600">+{b.pointsEarned || 0} pts</p>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+            <div className="p-4 border-t border-gray-100">
+              <button onClick={() => setSelectedUser(null)} className="w-full py-4 rounded-2xl bg-gray-100 text-gray-600 font-bold text-sm active:scale-95 transition">Close</button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <BottomNav />
+
     </div>
   );
 }
