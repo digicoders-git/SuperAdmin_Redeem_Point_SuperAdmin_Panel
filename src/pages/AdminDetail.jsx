@@ -54,6 +54,14 @@ export default function AdminDetail() {
     a.click();
   };
 
+  const serverBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
+  const getFullUrl = (path) => {
+    if (!path || path === "manual_adjustment") return "";
+    if (path.startsWith("http")) return path;
+    const cleanPath = path.replace(/\\/g, "/").replace(/^\/+/, "");
+    return `${serverBase}/${cleanPath}`;
+  };
+
   if (!data) return (
     <div className="min-h-screen bg-[#fff5f5] flex items-center justify-center">
       <div className="w-10 h-10 border-4 border-[#ffe4e4] border-t-[#800000] rounded-full animate-spin" />
@@ -160,8 +168,8 @@ export default function AdminDetail() {
                   }`}>{b.status}</span>
                 </div>
                 {b.billImage && b.billImage !== "manual_adjustment" && (
-                  <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(b.billImage)}>
-                    <img src={b.billImage} alt="Bill" className="w-full h-40 object-cover rounded-xl border border-gray-100 shadow-sm" />
+                  <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(getFullUrl(b.billImage))}>
+                    <img src={getFullUrl(b.billImage)} alt="Bill" className="w-full h-40 object-cover rounded-xl border border-gray-100 shadow-sm" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition-all flex items-center justify-center">
                       <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100" />
                     </div>
@@ -194,8 +202,8 @@ export default function AdminDetail() {
             ) : rewards.map((r) => (
               <div key={r._id} className="bg-white rounded-2xl p-3.5 border border-gray-100 flex items-center gap-3">
                 {r.rewardImage ? (
-                  <div className="relative group cursor-zoom-in shrink-0" onClick={() => setImgModal(r.rewardImage)}>
-                    <img src={r.rewardImage} alt="" className="w-12 h-12 rounded-xl object-cover" />
+                  <div className="relative group cursor-zoom-in shrink-0" onClick={() => setImgModal(getFullUrl(r.rewardImage))}>
+                    <img src={getFullUrl(r.rewardImage)} alt="" className="w-12 h-12 rounded-xl object-cover" />
                     <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 rounded-xl transition-all flex items-center justify-center">
                       <ZoomIn size={16} className="text-white opacity-0 group-hover:opacity-100 transition-opacity" />
                     </div>
@@ -251,13 +259,13 @@ export default function AdminDetail() {
       {imgModal && (
         <div className="fixed inset-0 bg-black/95 z-50 flex flex-col" onClick={() => setImgModal(null)}>
           <div className="flex items-center justify-between px-4 py-3 shrink-0" onClick={(e) => e.stopPropagation()}>
-            <span className="text-white/70 text-sm font-medium">Reward Image</span>
+            <span className="text-white/70 text-sm font-medium">Image Preview</span>
             <button className="bg-white/10 hover:bg-white/20 p-2.5 rounded-full text-white transition-colors" onClick={() => setImgModal(null)}>
               <X size={20} />
             </button>
           </div>
           <div className="flex-1 flex items-center justify-center p-4 overflow-auto">
-            <img src={imgModal} alt="Reward" className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
+            <img src={imgModal} alt="Preview" className="max-w-full max-h-full object-contain rounded-xl shadow-2xl" onClick={(e) => e.stopPropagation()} />
           </div>
           <p className="text-white/30 text-xs text-center pb-4 shrink-0">Tap outside to close</p>
         </div>
@@ -337,8 +345,8 @@ export default function AdminDetail() {
                       }`}>{b.status}</span>
                     </div>
                     {b.billImage && b.billImage !== "manual_adjustment" && (
-                      <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(b.billImage)}>
-                        <img src={b.billImage} alt="Bill" className="w-full h-32 object-cover rounded-xl border border-gray-200 shadow-sm" />
+                      <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(getFullUrl(b.billImage))}>
+                        <img src={getFullUrl(b.billImage)} alt="Bill" className="w-full h-32 object-cover rounded-xl border border-gray-200 shadow-sm" />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition-all flex items-center justify-center">
                           <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100" />
                         </div>

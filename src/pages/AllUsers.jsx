@@ -19,6 +19,14 @@ export default function AllUsers() {
   const [loadingBills, setLoadingBills] = useState(null);
   const [fullScreenImage, setFullScreenImage] = useState(null);
 
+  const serverBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
+  const getFullUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    const cleanPath = path.replace(/\\/g, "/").replace(/^\/+/, "");
+    return `${serverBase}/${cleanPath}`;
+  };
+
   const downloadImage = async (url, filename) => {
     try {
       const res = await fetch(url);
@@ -208,7 +216,7 @@ export default function AllUsers() {
                                     <span className="text-xs font-semibold text-gray-600">PDF Document</span>
                                   </div>
                                   <button
-                                    onClick={() => downloadImage(b.billImage, `bill-${b._id}.pdf`)}
+                                    onClick={() => downloadImage(getFullUrl(b.billImage), `bill-${b._id}.pdf`)}
                                     className="flex items-center gap-1 bg-[#800000] text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg active:scale-95"
                                   >
                                     <Download size={11} /> Download
@@ -217,17 +225,17 @@ export default function AllUsers() {
                               ) : (
                                 <div className="relative group">
                                   <img
-                                    src={b.billImage}
+                                    src={getFullUrl(b.billImage)}
                                     alt="bill"
                                     className="w-full h-32 object-cover rounded-xl border border-gray-100 cursor-zoom-in"
-                                    onClick={() => setFullScreenImage(b.billImage)}
+                                    onClick={() => setFullScreenImage(getFullUrl(b.billImage))}
                                     onError={(e) => { e.target.style.display = "none"; }}
                                   />
                                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition-all flex items-center justify-center pointer-events-none">
                                     <ZoomIn size={22} className="text-white opacity-0 group-hover:opacity-100 transition-opacity drop-shadow" />
                                   </div>
                                   <button
-                                    onClick={() => downloadImage(b.billImage, `bill-${b._id}.jpg`)}
+                                    onClick={() => downloadImage(getFullUrl(b.billImage), `bill-${b._id}.jpg`)}
                                     className="absolute bottom-2 right-2 flex items-center gap-1 bg-[#800000] text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg shadow active:scale-95"
                                   >
                                     <Download size={11} /> Download

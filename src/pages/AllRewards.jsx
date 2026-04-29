@@ -13,6 +13,14 @@ export default function AllRewards() {
     api.get("/superadmin/rewards").then(({ data }) => setRewards(data.rewards)).finally(() => setLoading(false));
   }, []);
 
+  const serverBase = import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
+  const getFullUrl = (path) => {
+    if (!path) return "";
+    if (path.startsWith("http")) return path;
+    const cleanPath = path.replace(/\\/g, "/").replace(/^\/+/, "");
+    return `${serverBase}/${cleanPath}`;
+  };
+
   const filteredRewards = rewards.filter((r) => {
     const query = searchQuery.toLowerCase();
     const shopId = r.adminId?.shopId?.toLowerCase() || "";
@@ -125,7 +133,7 @@ export default function AllRewards() {
         ) : filteredRewards.map((r) => (
           <div key={r._id} className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 flex items-center gap-3">
             {r.rewardImage ? (
-              <img src={r.rewardImage} alt="" className="w-14 h-14 rounded-2xl object-cover shrink-0" />
+              <img src={getFullUrl(r.rewardImage)} alt="" className="w-14 h-14 rounded-2xl object-cover shrink-0" />
             ) : (
               <div className="w-14 h-14 bg-[#ffe4e4] rounded-2xl flex items-center justify-center shrink-0">
                 <Gift size={22} className="text-[#800000]" />
