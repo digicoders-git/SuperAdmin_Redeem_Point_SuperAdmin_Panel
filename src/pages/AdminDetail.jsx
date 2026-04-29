@@ -180,10 +180,11 @@ export default function AdminDetail() {
                      <p className="text-[10px] text-gray-400 font-bold uppercase">Points Earned</p>
                      <p className="text-sm font-black text-emerald-600">+{b.pointsEarned || 0} pts</p>
                    </div>
-                   <div className="text-right">
-                     <p className="text-[10px] text-gray-400 font-bold uppercase">User ID</p>
-                     <p className="text-[10px] font-bold text-gray-700 truncate max-w-[100px]">{b.userId || "—"}</p>
-                   </div>
+                    <div className="text-right">
+                      <p className="text-[10px] text-gray-400 font-bold uppercase">Customer</p>
+                      <p className="text-xs font-bold text-gray-900">{b.userId?.name || "—"}</p>
+                      <p className="text-[10px] text-gray-400">{b.userId?.mobile || ""}</p>
+                    </div>
                 </div>
               </div>
             ))}
