@@ -60,7 +60,7 @@ export default function AdminDetail() {
     </div>
   );
 
-  const { admin, users, rewards, redemptions } = data;
+  const { admin, users, bills, rewards, redemptions } = data;
 
   return (
     <div className="min-h-screen bg-[#fff5f5] pb-24">
@@ -103,6 +103,7 @@ export default function AdminDetail() {
         {/* Tabs */}
         <div className="flex gap-2 bg-gray-100 p-1 rounded-2xl mb-4">
           <Tab label="Users" active={tab === "users"} onClick={() => setTab("users")} />
+          <Tab label="Bills" active={tab === "bills"} onClick={() => setTab("bills")} />
           <Tab label="Rewards" active={tab === "rewards"} onClick={() => setTab("rewards")} />
           <Tab label="Redemptions" active={tab === "redemptions"} onClick={() => setTab("redemptions")} />
         </div>
@@ -132,6 +133,55 @@ export default function AdminDetail() {
             ))}
           </div>
         )}
+
+        {/* Bills Tab */}
+        {tab === "bills" && (
+          <div className="space-y-3">
+            {bills.length === 0 ? (
+              <div className="flex flex-col items-center py-12 gap-2">
+                <Receipt size={28} className="text-gray-200" />
+                <p className="text-gray-400 text-sm">No bills found</p>
+              </div>
+            ) : bills.map((b) => (
+              <div key={b._id} className="bg-white rounded-2xl p-4 border border-gray-100">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#800000]/10 rounded-xl flex items-center justify-center">
+                      <Receipt size={18} className="text-[#800000]" />
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-400 font-bold uppercase tracking-wider">{new Date(b.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short', year: 'numeric' })}</p>
+                      <p className="font-extrabold text-gray-900">₹{b.amount}</p>
+                    </div>
+                  </div>
+                  <span className={`text-[10px] font-black uppercase px-2.5 py-1 rounded-full ${
+                    b.status === "approved" ? "bg-emerald-100 text-emerald-700" :
+                    b.status === "pending" ? "bg-amber-100 text-amber-700" : "bg-red-100 text-red-700"
+                  }`}>{b.status}</span>
+                </div>
+                {b.billImage && b.billImage !== "manual_adjustment" && (
+                  <div className="relative group cursor-zoom-in mt-2" onClick={() => setImgModal(b.billImage)}>
+                    <img src={b.billImage} alt="Bill" className="w-full h-40 object-cover rounded-xl border border-gray-100 shadow-sm" />
+                    <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 rounded-xl transition-all flex items-center justify-center">
+                      <ZoomIn size={20} className="text-white opacity-0 group-hover:opacity-100" />
+                    </div>
+                  </div>
+                )}
+                <div className="mt-3 pt-3 border-t border-gray-100 flex justify-between items-center">
+                   <div>
+                     <p className="text-[10px] text-gray-400 font-bold uppercase">Points Earned</p>
+                     <p className="text-sm font-black text-emerald-600">+{b.pointsEarned || 0} pts</p>
+                   </div>
+                   <div className="text-right">
+                     <p className="text-[10px] text-gray-400 font-bold uppercase">User ID</p>
+                     <p className="text-[10px] font-bold text-gray-700 truncate max-w-[100px]">{b.userId || "—"}</p>
+                   </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+
 
         {/* Rewards Tab */}
         {tab === "rewards" && (
