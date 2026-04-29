@@ -182,7 +182,9 @@ export default function AdminDetail() {
                    </div>
                     <div className="text-right">
                       <p className="text-[10px] text-gray-400 font-bold uppercase">Customer</p>
-                      <p className="text-xs font-bold text-gray-900">{b.userId?.name || "—"}</p>
+                      <p className="text-xs font-bold text-gray-900">
+                        {b.userId?.name || (typeof b.userId === 'string' ? `ID: ${b.userId.slice(-6)}` : "Deleted User")}
+                      </p>
                       <p className="text-[10px] text-gray-400">{b.userId?.mobile || ""}</p>
                     </div>
                 </div>
