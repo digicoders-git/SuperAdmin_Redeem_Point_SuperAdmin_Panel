@@ -258,7 +258,14 @@ export default function Admins() {
               <button onClick={downloadQR} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20">
                 <Download size={18} /> DOWNLOAD QR CODE
               </button>
-
+              {/* <a 
+                href={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
+              >
+                <Plus size={18} /> OPEN REGISTRATION PAGE
+              </a> */}
             </div>
 
             <div className="mt-6 flex flex-col items-center gap-1">
