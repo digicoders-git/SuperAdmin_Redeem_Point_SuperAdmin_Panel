@@ -172,10 +172,10 @@ export default function Admins() {
               </div>
               <div className="flex items-center gap-2">
                 <button onClick={() => setQrAdmin(a)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-[#ffe4e4] text-[#800000]">
-                   <QrCode size={17} />
+                  <QrCode size={17} />
                 </button>
-                <button 
-                  onClick={() => toggleAdmin(a._id, a.name || a.adminId, a.isActive)} 
+                <button
+                  onClick={() => toggleAdmin(a._id, a.name || a.adminId, a.isActive)}
                   className={`w-9 h-9 flex items-center justify-center rounded-xl transition-colors ${a.isActive ? "bg-red-50 text-red-500 hover:bg-red-100" : "bg-green-50 text-green-500 hover:bg-green-100"}`}
                   title={a.isActive ? "Deactivate Account" : "Activate Account"}
                 >
@@ -258,16 +258,9 @@ export default function Admins() {
               <button onClick={downloadQR} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20">
                 <Download size={18} /> DOWNLOAD QR CODE
               </button>
-              <a 
-                href={`${USER_PANEL_URL}/register?shopId=${qrAdmin.shopId}`} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="w-full bg-white border-2 border-[#ffe4e4] text-[#800000] font-black py-4 rounded-2xl flex items-center justify-center gap-2 transition active:scale-[0.98] hover:bg-[#fff5f5]"
-              >
-                <Plus size={18} /> OPEN REGISTRATION PAGE
-              </a>
+
             </div>
-            
+
             <div className="mt-6 flex flex-col items-center gap-1">
               <p className="text-[10px] text-gray-400 font-bold tracking-[0.2em] uppercase">Powered by</p>
               <p className="text-sm font-black text-gray-900 tracking-tighter">INAAMIFY</p>
