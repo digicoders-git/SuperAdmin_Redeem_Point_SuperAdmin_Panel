@@ -6,7 +6,7 @@ import { ArrowLeft, UserPlus, Copy, Check } from "lucide-react";
 
 export default function CreateAdmin() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ adminId: "", password: "", name: "" });
+  const [form, setForm] = useState({ mobile: "", password: "", name: "" });
   const [loading, setLoading] = useState(false);
   const [created, setCreated] = useState(null);
   const [copied, setCopied] = useState("");
@@ -17,7 +17,7 @@ export default function CreateAdmin() {
     try {
       const { data } = await api.post("/superadmin/admins", form);
       setCreated(data.admin);
-      setForm({ adminId: "", password: "", name: "" });
+      setForm({ mobile: "", password: "", name: "" });
     } catch (err) {
       Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.message || "Failed to create admin" });
     } finally {
@@ -61,15 +61,15 @@ export default function CreateAdmin() {
                 placeholder="Full Name (optional)"
                 value={form.name}
                 onChange={(e) => setForm({ ...form, name: e.target.value })}
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400 mb-4"
               />
               <input
-                type="text"
-                placeholder="Admin ID *"
-                value={form.adminId}
-                onChange={(e) => setForm({ ...form, adminId: e.target.value })}
+                type="tel"
+                placeholder="Mobile Number *"
+                value={form.mobile}
+                onChange={(e) => setForm({ ...form, mobile: e.target.value })}
                 required
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400 mb-4"
               />
               <input
                 type="password"
@@ -77,7 +77,7 @@ export default function CreateAdmin() {
                 value={form.password}
                 onChange={(e) => setForm({ ...form, password: e.target.value })}
                 required
-                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400"
+                className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm outline-none focus:border-indigo-400 mb-4"
               />
               <button
                 type="submit"
@@ -97,12 +97,12 @@ export default function CreateAdmin() {
               </div>
               <div>
                 <p className="font-bold text-gray-900">Admin Created!</p>
-                <p className="text-xs text-gray-500">{created.name || created.adminId}</p>
+                <p className="text-xs text-gray-500">{created.name || created.mobile || created.adminId}</p>
               </div>
             </div>
 
             {[
-              { label: "Admin ID", value: created.adminId, key: "adminId" },
+              { label: "Mobile / Admin ID", value: created.mobile || created.adminId, key: "adminId" },
               { label: "Shop ID", value: created.shopId, key: "shopId" },
               { label: "Referral Code", value: created.referralCode, key: "referralCode" },
             ].map(({ label, value, key }) => (
