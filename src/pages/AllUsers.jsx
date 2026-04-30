@@ -17,7 +17,9 @@ export default function AllUsers() {
   const [expandedUser, setExpandedUser] = useState(null);
   const [userBills, setUserBills] = useState({});
   const [loadingBills, setLoadingBills] = useState(null);
-  const [fullScreenImage, setFullScreenImage] = useState(null);
+  const [showCreate, setShowCreate] = useState(false);
+  const [form, setForm] = useState({ mobile: "", password: "", name: "", shopId: "" });
+  const [creating, setCreating] = useState(false);
 
   const serverBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
   const getFullUrl = (path) => {
@@ -41,9 +43,30 @@ export default function AllUsers() {
     }
   };
 
-  useEffect(() => {
+  const fetchUsers = () => {
+    setLoading(true);
     api.get("/superadmin/users").then(({ data }) => setUsers(data.users)).finally(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchUsers();
   }, []);
+
+  const createUser = async (e) => {
+    e.preventDefault();
+    setCreating(true);
+    try {
+      await api.post("/superadmin/users", form);
+      setForm({ mobile: "", password: "", name: "", shopId: "" });
+      setShowCreate(false);
+      fetchUsers();
+      Swal.fire({ icon: "success", title: "User Created!", timer: 1500, showConfirmButton: false });
+    } catch (err) {
+      Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.message || "Failed to create user" });
+    } finally {
+      setCreating(false);
+    }
+  };
 
   const toggleUser = async (userId) => {
     if (expandedUser === userId) { setExpandedUser(null); return; }
@@ -106,9 +129,12 @@ export default function AllUsers() {
               >
                 <Download size={20} className="text-white" />
               </button>
-              <div className="bg-white/10 p-3 rounded-2xl border border-white/20">
-                <Users size={22} className="text-white" />
-              </div>
+              <button
+                onClick={() => setShowCreate(true)}
+                className="bg-[#f97316] text-white p-3 rounded-2xl shadow-lg border border-white/10 active:scale-95 transition-transform"
+              >
+                <Users size={22} />
+              </button>
             </div>
           </div>
           <div className="flex items-center bg-white/10 border border-white/20 rounded-2xl px-4 py-3 gap-2">
@@ -256,6 +282,65 @@ export default function AllUsers() {
       </div>
 
       <BottomNav />
+
+      {/* Create User Modal */}
+      {showCreate && (
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between mb-6">
+              <p className="font-black text-gray-900 text-xl">Create New User</p>
+              <button onClick={() => setShowCreate(false)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition">
+                <X size={20} className="text-gray-500" />
+              </button>
+            </div>
+            <form onSubmit={createUser} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Full Name (optional)</label>
+                <input
+                  placeholder="e.g. Rahul Kumar"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Mobile Number *</label>
+                <input
+                  type="tel"
+                  placeholder="Enter 10-digit mobile"
+                  value={form.mobile}
+                  onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+                  required
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Shop ID (optional)</label>
+                <input
+                  placeholder="e.g. SHOP-XXXXXX"
+                  value={form.shopId}
+                  onChange={(e) => setForm({ ...form, shopId: e.target.value })}
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Password *</label>
+                <input
+                  type="password"
+                  placeholder="Create password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <button type="submit" disabled={creating} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl mt-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20 disabled:opacity-50">
+                {creating ? "CREATING..." : "CREATE USER"}
+              </button>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Fullscreen Image Viewer */}
       {fullScreenImage && (

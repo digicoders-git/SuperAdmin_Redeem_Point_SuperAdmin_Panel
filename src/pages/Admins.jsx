@@ -15,7 +15,7 @@ export default function Admins() {
   const [loading, setLoading] = useState(true);
   const [showCreate, setShowCreate] = useState(false);
   const [qrAdmin, setQrAdmin] = useState(null);
-  const [form, setForm] = useState({ adminId: "", password: "", name: "" });
+  const [form, setForm] = useState({ mobile: "", password: "", name: "" });
   const [creating, setCreating] = useState(false);
   const qrRef = useRef(null);
 
@@ -31,7 +31,7 @@ export default function Admins() {
     setCreating(true);
     try {
       await api.post("/superadmin/admins", form);
-      setForm({ adminId: "", password: "", name: "" });
+      setForm({ mobile: "", password: "", name: "" });
       setShowCreate(false);
       fetchAdmins();
       Swal.fire({ icon: "success", title: "Admin Created!", timer: 1500, showConfirmButton: false });
@@ -189,33 +189,48 @@ export default function Admins() {
 
       {/* Create Admin Modal */}
       {showCreate && (
-        <div className="fixed inset-0 bg-black/50 z-50 flex items-end justify-center">
-          <div className="bg-white w-full max-w-lg rounded-t-3xl p-6 pb-8">
-            <div className="w-10 h-1 bg-gray-200 rounded-full mx-auto mb-5" />
-            <div className="flex items-center justify-between mb-5">
-              <p className="font-extrabold text-gray-900 text-lg">Create New Admin</p>
-              <button onClick={() => setShowCreate(false)} className="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100">
-                <X size={18} className="text-gray-500" />
+        <div className="fixed inset-0 bg-black/50 z-50 flex items-center justify-center px-4">
+          <div className="bg-white w-full max-w-sm rounded-[32px] p-6 shadow-2xl animate-in zoom-in-95 duration-200">
+            <div className="flex items-center justify-between mb-6">
+              <p className="font-black text-gray-900 text-xl">Create New Admin</p>
+              <button onClick={() => setShowCreate(false)} className="w-9 h-9 flex items-center justify-center rounded-xl bg-gray-100 hover:bg-gray-200 transition">
+                <X size={20} className="text-gray-500" />
               </button>
             </div>
-            <form onSubmit={createAdmin} className="space-y-3">
-              {[
-                { key: "name", placeholder: "Full Name (optional)" },
-                { key: "adminId", placeholder: "Admin ID *", required: true },
-                { key: "password", placeholder: "Password *", type: "password", required: true },
-              ].map(({ key, placeholder, type, required }) => (
+            <form onSubmit={createAdmin} className="space-y-4">
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Full Name (optional)</label>
                 <input
-                  key={key}
-                  type={type || "text"}
-                  placeholder={placeholder}
-                  value={form[key]}
-                  onChange={(e) => setForm({ ...form, [key]: e.target.value })}
-                  required={required}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3.5 text-sm outline-none focus:border-[#800000]/40 transition"
+                  placeholder="e.g. John Doe"
+                  value={form.name}
+                  onChange={(e) => setForm({ ...form, name: e.target.value })}
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
                 />
-              ))}
-              <button type="submit" disabled={creating} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-extrabold py-3.5 rounded-2xl mt-1 transition active:scale-[0.98]">
-                {creating ? "Creating..." : "Create Admin"}
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Mobile Number *</label>
+                <input
+                  type="tel"
+                  placeholder="Enter 10-digit mobile"
+                  value={form.mobile}
+                  onChange={(e) => setForm({ ...form, mobile: e.target.value })}
+                  required
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <div>
+                <label className="text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-1.5 block ml-1">Password *</label>
+                <input
+                  type="password"
+                  placeholder="Create password"
+                  value={form.password}
+                  onChange={(e) => setForm({ ...form, password: e.target.value })}
+                  required
+                  className="w-full bg-gray-50 border-2 border-gray-100 rounded-2xl px-5 py-3.5 text-sm outline-none focus:border-[#800000]/40 focus:bg-white transition"
+                />
+              </div>
+              <button type="submit" disabled={creating} className="w-full bg-[#800000] hover:bg-[#6b0000] text-white font-black py-4 rounded-2xl mt-2 transition active:scale-[0.98] shadow-lg shadow-[#800000]/20 disabled:opacity-50">
+                {creating ? "CREATING..." : "CREATE ADMIN"}
               </button>
             </form>
           </div>
