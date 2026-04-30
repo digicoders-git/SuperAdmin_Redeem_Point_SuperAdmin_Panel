@@ -3,7 +3,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { QRCodeCanvas } from "qrcode.react";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
-import { ArrowLeft, Users, Gift, RotateCcw, QrCode, Download, X, Receipt, ZoomIn, IndianRupee, FileText } from "lucide-react";
+import { ArrowLeft, Users, Gift, RotateCcw, QrCode, Download, X, Receipt, ZoomIn, IndianRupee, FileText, Trash2 } from "lucide-react";
+import Swal from "sweetalert2";
 
 const USER_PANEL_URL = import.meta.env.VITE_USER_PANEL_URL || "https://super-admin-redeem-point-admin-pane.vercel.app/";
 
@@ -53,6 +54,34 @@ export default function AdminDetail() {
     a.download = `${data.admin.shopId}-qr.png`;
     a.click();
   };
+  
+  const handleDelete = async () => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "This will permanently delete the admin and all associated data (rewards, users, bills)!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#800000",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!"
+    });
+
+    if (result.isConfirmed) {
+      try {
+        await api.delete(`/superadmin/admins/${id}`);
+        Swal.fire({
+          icon: "success",
+          title: "Deleted!",
+          text: "Admin has been deleted.",
+          timer: 1500,
+          showConfirmButton: false
+        });
+        navigate("/admins");
+      } catch (err) {
+        Swal.fire("Error", err.response?.data?.message || "Failed to delete", "error");
+      }
+    }
+  };
 
   const serverBase = import.meta.env.VITE_IMAGE_URL || import.meta.env.VITE_API_URL?.replace(/\/api\/?$/, "").replace(/\/$/, "") || "";
   const getFullUrl = (path) => {
@@ -87,9 +116,14 @@ export default function AdminDetail() {
               <p className="text-white/50 text-[10px] font-medium">Shop ID: {admin.shopId}</p>
               <p className="text-white/50 text-[10px] font-medium">Mobile: {admin.mobile || "N/A"}</p>
             </div>
-            <button onClick={() => setShowQR(true)} className="flex items-center gap-1.5 bg-[#f97316] text-white text-xs font-bold px-3 py-2 rounded-xl">
-              <QrCode size={14} /> QR Code
-            </button>
+            <div className="flex flex-col gap-2">
+              <button onClick={() => setShowQR(true)} className="flex items-center justify-center gap-1.5 bg-[#f97316] text-white text-[10px] font-bold px-3 py-2 rounded-xl">
+                <QrCode size={12} /> QR Code
+              </button>
+              <button onClick={handleDelete} className="flex items-center justify-center gap-1.5 bg-red-500 text-white text-[10px] font-bold px-3 py-2 rounded-xl">
+                <Trash2 size={12} /> Delete Admin
+              </button>
+            </div>
           </div>
           <div className="flex gap-3">
             {[
