@@ -56,19 +56,22 @@ export default function AdminDetail() {
   };
   
   const handleDelete = async () => {
-    const result = await Swal.fire({
-      title: "Are you sure?",
-      text: "This will permanently delete the admin and all associated data (rewards, users, bills)!",
-      icon: "warning",
+    const { value: password } = await Swal.fire({
+      title: "Security Check",
+      text: "Enter your SuperAdmin password to confirm deletion",
+      input: "password",
+      inputPlaceholder: "Enter password",
       showCancelButton: true,
       confirmButtonColor: "#800000",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!"
+      confirmButtonText: "Confirm & Delete",
+      inputValidator: (value) => {
+        if (!value) return "Password is required!";
+      }
     });
 
-    if (result.isConfirmed) {
+    if (password) {
       try {
-        await api.delete(`/superadmin/admins/${id}`);
+        await api.delete(`/superadmin/admins/${id}`, { data: { password } });
         Swal.fire({
           icon: "success",
           title: "Deleted!",

@@ -41,7 +41,7 @@ export default function CreateAdmin() {
         <h1 className="font-bold text-gray-900">Register New Admin</h1>
       </div>
 
-      <div className="px-4 py-6 space-y-5">
+      <div className="px-4 py-6 space-y-5 pb-24">
         {/* Form */}
         {!created ? (
           <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-5">
