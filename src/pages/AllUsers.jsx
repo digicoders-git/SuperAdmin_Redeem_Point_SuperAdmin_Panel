@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import api from "../api/axios";
 import BottomNav from "../components/BottomNav";
-import { Search, Users, Download, ChevronDown, ChevronUp, Receipt, IndianRupee, Clock, FileText, X, ZoomIn } from "lucide-react";
+import { Search, Users, Download, ChevronDown, ChevronUp, Receipt, IndianRupee, Clock, FileText, X, ZoomIn, Trash2 } from "lucide-react";
 import * as XLSX from "xlsx";
+import Swal from "sweetalert2";
 
 const statusStyle = {
   pending: "bg-amber-100 text-amber-600",
@@ -66,6 +67,27 @@ export default function AllUsers() {
       Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.message || "Failed to create user" });
     } finally {
       setCreating(false);
+    }
+  };
+
+  const deleteUser = async (userId, userName) => {
+    const result = await Swal.fire({
+      title: `Delete ${userName}?`,
+      text: "This will permanently delete the user and all their bills & redemptions.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Delete",
+      confirmButtonColor: "#800000",
+      cancelButtonColor: "#d1d5db",
+    });
+    if (!result.isConfirmed) return;
+    try {
+      await api.delete(`/superadmin/users/${userId}`);
+      setUsers(prev => prev.filter(u => u._id !== userId));
+      if (expandedUser === userId) setExpandedUser(null);
+      Swal.fire({ icon: "success", title: "User Deleted", timer: 1500, showConfirmButton: false });
+    } catch (err) {
+      Swal.fire({ icon: "error", title: "Error", text: err.response?.data?.message || "Failed to delete user" });
     }
   };
 
@@ -195,7 +217,15 @@ export default function AllUsers() {
                 <span className={`text-xs font-bold px-2 py-0.5 rounded-full ${u.isActive ? "bg-emerald-100 text-emerald-600" : "bg-red-100 text-red-500"}`}>
                   {u.isActive ? "Active" : "Inactive"}
                 </span>
-                {expandedUser === u._id ? <ChevronUp size={14} className="text-gray-400 mt-1" /> : <ChevronDown size={14} className="text-gray-400 mt-1" />}
+                <div className="flex items-center gap-1 mt-1">
+                  <button
+                    onClick={(e) => { e.stopPropagation(); deleteUser(u._id, u.name); }}
+                    className="p-1 rounded-lg bg-red-50 text-red-500 hover:bg-red-100 transition active:scale-90"
+                  >
+                    <Trash2 size={13} />
+                  </button>
+                  {expandedUser === u._id ? <ChevronUp size={14} className="text-gray-400" /> : <ChevronDown size={14} className="text-gray-400" />}
+                </div>
               </div>
             </div>
 
