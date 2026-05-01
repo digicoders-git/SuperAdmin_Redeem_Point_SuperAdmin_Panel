@@ -17,6 +17,7 @@ export default function AllUsers() {
   const [expandedUser, setExpandedUser] = useState(null);
   const [userBills, setUserBills] = useState({});
   const [loadingBills, setLoadingBills] = useState(null);
+  const [fullScreenImage, setFullScreenImage] = useState(null);
   const [showCreate, setShowCreate] = useState(false);
   const [form, setForm] = useState({ mobile: "", password: "", name: "", shopId: "" });
   const [creating, setCreating] = useState(false);
